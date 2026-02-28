@@ -1,6 +1,8 @@
 import { computed, ref } from 'vue';
 import { useEventsStore } from '@/stores/eventsStore';
 import { useActionsStore } from '@/stores/actionsStore';
+import { STORAGE_KEYS } from '@/constants/storage';
+import { readStorage } from '@/utils/storage';
 import type { EventItem, PlannedAction } from '@/types/domain';
 
 const makeId = () => `${Date.now()}-${Math.random().toString(16).slice(2, 8)}`;
@@ -53,6 +55,11 @@ export const useActionsFeed = () => {
 
   const makeEventId = () => `evt-${Date.now()}-${Math.random().toString(16).slice(2, 8)}`;
 
+  const isActionLoggingEnabled = (action: Pick<PlannedAction, 'plannedAt'>): boolean =>
+    action.plannedAt
+      ? readStorage<boolean>(STORAGE_KEYS.logScheduledActions, true)
+      : readStorage<boolean>(STORAGE_KEYS.logUnscheduledActions, false);
+
   const appendSystemEvent = async (payload: {
     actionId: string;
     type: NonNullable<EventItem['type']>;
@@ -75,6 +82,10 @@ export const useActionsFeed = () => {
   };
 
   const syncOverdueEvents = async () => {
+    if (!readStorage<boolean>(STORAGE_KEYS.logScheduledActions, true)) {
+      return;
+    }
+
     await eventsStore.load();
     const now = new Date().toISOString();
     const overdueActions = actionsStore.state.items.filter(
@@ -212,7 +223,7 @@ export const useActionsFeed = () => {
     await actionsStore.setActions(normalizeOrder(next));
     await syncOverdueEvents();
 
-    if (!target.plannedAt) {
+    if (!isActionLoggingEnabled(target)) {
       return;
     }
 

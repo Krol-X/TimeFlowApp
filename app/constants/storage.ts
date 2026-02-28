@@ -5,6 +5,8 @@ export const STORAGE_KEYS = {
   events: 'timeflow.events.v1',
   theme: 'timeflow.theme.v1',
   confirmDelete: 'timeflow.confirmDelete.v1',
+  logScheduledActions: 'timeflow.logScheduledActions.v1',
+  logUnscheduledActions: 'timeflow.logUnscheduledActions.v1',
 } as const;
 
 export const DEFAULT_ACTIONS: PlannedAction[] = [];
