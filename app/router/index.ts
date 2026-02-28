@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router';
+import { createRouter, createWebHashHistory } from 'vue-router';
 import ScheduledActionsScreen from '@/components/screens/ScheduledActionsScreen.vue';
 import UnscheduledActionsScreen from '@/components/screens/UnscheduledActionsScreen.vue';
 import ArchivedActionsScreen from '@/components/screens/ArchivedActionsScreen.vue';
@@ -6,7 +6,7 @@ import EventsFeedScreen from '@/components/screens/EventsFeedScreen.vue';
 import SettingsScreen from '@/components/screens/SettingsScreen.vue';
 
 export const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHashHistory(),
   routes: [
     { path: '/', redirect: '/scheduled' },
     { path: '/scheduled', name: 'scheduled', component: ScheduledActionsScreen },
